@@ -8,6 +8,7 @@ import {
 import LoginPage from './pages/LoginPage'
 import ButtonAppBar from './components/ButtonAppBar'
 import SignUpPage from './pages/SignUpPage'
+import DashboardPage from './pages/DashboardPage'
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path='/signup' element={<SignUpPage/>}/>
+        <Route path='/' element={<DashboardPage/>}/>
       </Routes>
 
     </Router>
