@@ -6,13 +6,11 @@ import MicIcon from "@mui/icons-material/Mic";
 import Webcam from "react-webcam";
 import { GoogleGenAI } from "@google/genai";
 
-const key=import.meta.env.VITE_GEMINI_API_KEY;
+const key = import.meta.env.VITE_GEMINI_API_KEY;
 const ai = new GoogleGenAI({
   apiKey: key,
 });
 let chat;
-
-
 
 export default function DashboardPage() {
   const [error, setError] = useState(null);
@@ -64,7 +62,6 @@ export default function DashboardPage() {
           ...prevMessages,
           { text: modelresponse, role: "model" },
         ]);
-        
       }
     }, 3000); // 3 seconds of inactivity
     setTimeoutId(id);
@@ -75,26 +72,25 @@ export default function DashboardPage() {
       message: message,
     });
     handleSpeak(result.text);
-
+    console.log(result.text);
+    
     return result.text;
   };
 
-  const handleSpeak = async(message) => {
+  const handleSpeak = async (message) => {
     console.log(message);
-    
+
     const speech = new SpeechSynthesisUtterance(message);
     console.log(speech);
-    
+
     speech.lang = "en-US";
     speech.volume = 1;
     speech.rate = 1;
     speech.pitch = 1;
     speech.voice = speechSynthesis.getVoices()[191];
-    
 
-     await window.speechSynthesis.speak(speech);
+    await window.speechSynthesis.speak(speech);
   };
-
 
   useEffect(() => {
     if (listening) {
