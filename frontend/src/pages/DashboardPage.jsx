@@ -6,6 +6,7 @@ import MicIcon from "@mui/icons-material/Mic";
 import Webcam from "react-webcam";
 import { GoogleGenAI } from "@google/genai";
 import SideBar from "../components/SideBar";
+// import PersistentDrawerLeft from "../components/PersistentDrawerLeft";
 
 const key = import.meta.env.VITE_GEMINI_API_KEY;
 const ai = new GoogleGenAI({
