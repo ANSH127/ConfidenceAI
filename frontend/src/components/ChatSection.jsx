@@ -38,6 +38,7 @@ export default function ChatSection() {
     }
   };
 
+
   const { id } = useParams();
   const fetchChat = async () => {
     try {
@@ -91,7 +92,6 @@ export default function ChatSection() {
 
   useEffect(() => {
     fetchChat();
-    
   }, [id]);
 
   return (
@@ -128,6 +128,10 @@ export default function ChatSection() {
           >
             <MicIcon className="text-white" />
           </button>
+          <div className="text-gray-500 text-xs mt-2">
+            {listening ? "Listening..." : "Click to Speak"}
+          </div>
+          
         </div>
       </div>
     </div>
