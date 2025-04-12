@@ -1,9 +1,6 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MicIcon from "@mui/icons-material/Mic";
-import SpeechRecognition, {
-  useSpeechRecognition,
-} from "react-speech-recognition";
+import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { initializeChat, fetchModelResponse } from "../config/AI";
@@ -14,6 +11,9 @@ export default function ChatSection() {
   const [loading, setLoading] = useState(false);
   const { transcript, listening, resetTranscript } = useSpeechRecognition();
   const [iscompleted, setIsCompleted] = useState(false);
+
+  // Ref for the chat container
+  const chatContainerRef = useRef(null);
 
   const handleMicClick = async () => {
     if (listening) {
@@ -31,7 +31,7 @@ export default function ChatSection() {
           { role: "model", message: modelresponse },
         ]);
 
-        if( modelresponse.includes("Interview Completed")) {
+        if (modelresponse.includes("Interview Completed")) {
           setIsCompleted(true);
         }
 
@@ -61,6 +61,7 @@ export default function ChatSection() {
       setLoading(false);
     }
   };
+
   const addMessage = async (message, role) => {
     try {
       const response = await axios.post(
@@ -74,31 +75,35 @@ export default function ChatSection() {
         { withCredentials: true }
       );
       const updatedChat = response.data;
-      // console.log("Updated chat data:", updatedChat);
-
-      // setMessages(updatedChat.messages);
     } catch (error) {
       console.error("Error adding message:", error);
     }
   };
+
   const handleSpeak = async (message) => {
-    // console.log(message);
-
     const speech = new SpeechSynthesisUtterance(message);
-    console.log(speech);
-
     speech.lang = "en-US";
     speech.volume = 1;
     speech.rate = 1;
     speech.pitch = 1;
     speech.voice = speechSynthesis.getVoices()[191];
-
     await window.speechSynthesis.speak(speech);
+  };
+
+  // Scroll to the bottom of the chat container
+  const scrollToBottom = () => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
   };
 
   useEffect(() => {
     fetchChat();
   }, [id]);
+
+  useEffect(() => {
+    scrollToBottom(); // Scroll to the bottom when messages are updated
+  }, [messages]);
 
   return (
     <div>
@@ -108,7 +113,10 @@ export default function ChatSection() {
             <Loadar />
           </div>
         ) : (
-          <div className="flex-1 overflow-y-auto p-4 flex  flex-col space-y-2">
+          <div
+            ref={chatContainerRef} // Attach the ref to the chat container
+            className="flex-1 overflow-y-auto p-4 flex flex-col space-y-2"
+          >
             {messages.map((message, index) => (
               <div
                 key={index}
@@ -128,8 +136,8 @@ export default function ChatSection() {
             Interview Completed
           </div>
         ) : (
-          <div className=" flex flex-col pb-2 items-center bg-gray-100 rounded-md">
-            <div className="mb-2 p-2  w-full text-center">{transcript}</div>
+          <div className="flex flex-col pb-2 items-center bg-gray-100 rounded-md">
+            <div className="mb-2 p-2 w-full text-center">{transcript}</div>
             <button
               type="button"
               className={`p-3 rounded-full ${
