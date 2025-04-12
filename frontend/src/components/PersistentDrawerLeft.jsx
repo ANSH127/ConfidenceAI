@@ -19,8 +19,10 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import axios from "axios";
 import { format } from "date-fns";
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import { useNavigate } from "react-router-dom";
 const drawerWidth = 240;
 
@@ -126,6 +128,23 @@ export default function PersistentDrawerLeft({ children }) {
     }
   };
 
+  const handledeleteChat = async (chatId) => {
+
+    try {
+      const response = await axios.delete(
+        `http://localhost:3000/api/chat/${chatId}`,
+        { withCredentials: true }
+      );
+      // console.log(response.data);
+      setRecentChats((prevChats) =>
+        prevChats.filter((chat) => chat.chatId !== chatId)
+      );
+    } catch (error) {
+      console.error("Error deleting chat:", error);
+    }
+    
+  }
+
   React.useEffect(() => {
     fetchRecentChats();
   }, []);
@@ -178,6 +197,14 @@ export default function PersistentDrawerLeft({ children }) {
         </DrawerHeader>
         <Divider />
         <List>
+        <ListItem disablePadding>
+            <ListItemButton onClick={() => navigate("/")}>
+              <ListItemIcon>
+                <HomeRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Home"} />
+            </ListItemButton>
+          </ListItem>
           <ListItem disablePadding>
             <ListItemButton onClick={opennewchat}>
               <ListItemIcon>
@@ -186,6 +213,7 @@ export default function PersistentDrawerLeft({ children }) {
               <ListItemText primary={"New Chat"} />
             </ListItemButton>
           </ListItem>
+          
         </List>
         <Divider />
         <span className="text-black text-md pl-4 font-bold pt-2 ">
@@ -201,6 +229,10 @@ export default function PersistentDrawerLeft({ children }) {
                 >
                   {format(new Date(chat.createdAt), "EEE, dd MMM yyyy")}
                 </p>
+                <DeleteRoundedIcon  color="error" className="ml-auto mr-4 hover:text-red-800"
+                onClick={()=>handledeleteChat(chat.chatId)}
+                 />
+
               </button>
             </ListItem>
           ))}
