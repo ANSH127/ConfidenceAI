@@ -19,6 +19,11 @@ const createChat = async (req, res) => {
     // create a new chat
     try {
         const chat = await ChatModel.create({ userId, chatId });
+        chat.messages.push({
+            role: 'model',
+            message: 'Type "Start" to begin your mock interview!',
+        });
+        await chat.save();
         res.status(200).json(chat);
     } catch (error) {
         res.status(400).json({ error: error.message });
