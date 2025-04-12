@@ -37,7 +37,7 @@ const getChats = async (req, res) => {
     }
     const userId = user._id;
     try {
-        const chats = await ChatModel.find({ userId });
+        const chats = await ChatModel.find({ userId }).sort({ createdAt: -1 });
         res.status(200).json(chats);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -53,6 +53,25 @@ const getChatById = async (req, res) => {
     const { chatId } = req.params;
     try {
         const chat = await ChatModel.findOne({ userId, chatId });
+        if (!chat) {
+            return res.status(404).json({ error: 'Chat not found' });
+        }
+        res.status(200).json(chat);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
+
+// delete chat by chatId
+const deleteChatById = async (req, res) => {
+    const { user } = req;
+    if (!user) {
+        return res.status(401).json({ error: 'User not authenticated' });
+    }
+    const userId = user._id;
+    const { chatId } = req.params;
+    try {
+        const chat = await ChatModel.findOneAndDelete({ userId, chatId });
         if (!chat) {
             return res.status(404).json({ error: 'Chat not found' });
         }
@@ -94,4 +113,5 @@ module.exports = {
     getChats,
     getChatById,
     addMessage,
+    deleteChatById,
 }
