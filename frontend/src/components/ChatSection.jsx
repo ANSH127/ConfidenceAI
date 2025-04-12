@@ -31,7 +31,7 @@ export default function ChatSection() {
           { role: "model", message: modelresponse },
         ]);
 
-        if( modelresponse.includes("Interview completed")) {
+        if( modelresponse.includes("Interview Completed")) {
           setIsCompleted(true);
         }
 
