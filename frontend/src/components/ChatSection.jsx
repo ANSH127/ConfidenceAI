@@ -13,6 +13,7 @@ export default function ChatSection() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const { transcript, listening, resetTranscript } = useSpeechRecognition();
+  const [iscompleted, setIsCompleted] = useState(false);
 
   const handleMicClick = async () => {
     if (listening) {
@@ -29,6 +30,11 @@ export default function ChatSection() {
           ...prevMessages,
           { role: "model", message: modelresponse },
         ]);
+
+        if( modelresponse.includes("Interview completed")) {
+          setIsCompleted(true);
+        }
+
         await handleSpeak(modelresponse);
         await addMessage(modelresponse, "model");
       }
@@ -37,7 +43,6 @@ export default function ChatSection() {
       SpeechRecognition.startListening({ continuous: true });
     }
   };
-
 
   const { id } = useParams();
   const fetchChat = async () => {
@@ -49,6 +54,7 @@ export default function ChatSection() {
       const chatData = response.data;
       await initializeChat(chatData.messages);
       setMessages(chatData.messages);
+      setIsCompleted(chatData.isCompleted);
     } catch (error) {
       console.error("Error fetching chat data:", error);
     } finally {
@@ -117,22 +123,27 @@ export default function ChatSection() {
             ))}
           </div>
         )}
-        <div className=" flex flex-col pb-2 items-center bg-gray-100 rounded-md">
-          <div className="mb-2 p-2  w-full text-center">{transcript}</div>
-          <button
-            type="button"
-            className={`p-3 rounded-full ${
-              listening ? "bg-red-500" : "bg-gray-500"
-            }`}
-            onClick={handleMicClick}
-          >
-            <MicIcon className="text-white" />
-          </button>
-          <div className="text-gray-500 text-xs mt-2">
-            {listening ? "Listening..." : "Click to Speak"}
+        {iscompleted ? (
+          <div className="flex justify-center items-center bg-green-500 text-white p-2 rounded-md">
+            Interview Completed
           </div>
-          
-        </div>
+        ) : (
+          <div className=" flex flex-col pb-2 items-center bg-gray-100 rounded-md">
+            <div className="mb-2 p-2  w-full text-center">{transcript}</div>
+            <button
+              type="button"
+              className={`p-3 rounded-full ${
+                listening ? "bg-red-500" : "bg-gray-500"
+              }`}
+              onClick={handleMicClick}
+            >
+              <MicIcon className="text-white" />
+            </button>
+            <div className="text-gray-500 text-xs mt-2">
+              {listening ? "Listening..." : "Click to Speak"}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
