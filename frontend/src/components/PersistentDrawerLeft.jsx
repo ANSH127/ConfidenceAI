@@ -97,7 +97,7 @@ export default function PersistentDrawerLeft({ children }) {
         withCredentials: true,
       });
       setRecentChats(response.data);
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.error("Error fetching recent chats:", error);
     }
