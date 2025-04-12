@@ -19,24 +19,15 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
+import axios from "axios";
+import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 const drawerWidth = 240;
 
-
-
 const recentchats = [
-    {id:1,name:"Chat 1"},
-    {id:2,name:"Chat 2"},
-    {id:3,name:"Chat 3"},
-    {id:4,name:"Chat 4"},
-    {id:5,name:"Chat 5"},
-    {id:2,name:"Chat 2"},
-    {id:3,name:"Chat 3"},
-    {id:4,name:"Chat 4"},
-    {id:5,name:"Chat 5"},
-    {id:2,name:"Chat 2"},
-    {id:3,name:"Chat 3"},
-    {id:4,name:"Chat 4"},
-    {id:5,name:"Chat 5"},
+  { id: 1, name: "Chat 1" },
+  { id: 2, name: "Chat 2" },
+  { id: 3, name: "Chat 3" },
 ];
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -97,6 +88,20 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 export default function PersistentDrawerLeft({ children }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
+  const [recentChats, setRecentChats] = React.useState([]);
+  const navigate = useNavigate();
+
+  const fetchRecentChats = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/chat", {
+        withCredentials: true,
+      });
+      setRecentChats(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching recent chats:", error);
+    }
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -105,6 +110,10 @@ export default function PersistentDrawerLeft({ children }) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  React.useEffect(() => {
+    fetchRecentChats();
+  }, []);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -164,13 +173,18 @@ export default function PersistentDrawerLeft({ children }) {
           </ListItem>
         </List>
         <Divider />
-        <span className="text-black text-md pl-4 font-bold pt-2 ">Recent Chats</span>
+        <span className="text-black text-md pl-4 font-bold pt-2 ">
+          Recent Chats
+        </span>
         <List>
-          {recentchats.map((chat) => (
-            <ListItem key={chat.id} disablePadding>
+          {recentChats.map((chat) => (
+            <ListItem key={chat._id} disablePadding>
               <button className="flex flex-row items-center w-full p-2 hover:bg-gray-100">
-                <p  className="text-blue-800 text-lg pl-4  pt-2 ">{chat.name}</p>
-                
+                <p className="text-blue-800 text-lg pl-4  pt-2 "
+                onClick={() => navigate(`/c/${chat.chatId}`)}
+                >
+                  {format(new Date(chat.createdAt), "EEE, dd MMM yyyy")}
+                </p>
               </button>
             </ListItem>
           ))}
