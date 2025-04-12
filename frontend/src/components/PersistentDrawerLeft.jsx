@@ -111,6 +111,21 @@ export default function PersistentDrawerLeft({ children }) {
     setOpen(false);
   };
 
+  const opennewchat = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/chat/create",
+        {},
+        { withCredentials: true }
+      );
+      console.log(response.data);
+      setRecentChats((prevChats) => [response.data, ...prevChats]);
+      navigate(`/c/${response.data.chatId}`);
+    } catch (error) {
+      console.error("Error creating new chat:", error);
+    }
+  };
+
   React.useEffect(() => {
     fetchRecentChats();
   }, []);
@@ -164,7 +179,7 @@ export default function PersistentDrawerLeft({ children }) {
         <Divider />
         <List>
           <ListItem disablePadding>
-            <ListItemButton onClick={() => alert("New Chat")}>
+            <ListItemButton onClick={opennewchat}>
               <ListItemIcon>
                 <AddCircleRoundedIcon />
               </ListItemIcon>
@@ -180,8 +195,9 @@ export default function PersistentDrawerLeft({ children }) {
           {recentChats.map((chat) => (
             <ListItem key={chat._id} disablePadding>
               <button className="flex flex-row items-center w-full p-2 hover:bg-gray-100">
-                <p className="text-blue-800 text-lg pl-4  pt-2 "
-                onClick={() => navigate(`/c/${chat.chatId}`)}
+                <p
+                  className="text-blue-800 text-lg pl-4  pt-2 "
+                  onClick={() => navigate(`/c/${chat.chatId}`)}
                 >
                   {format(new Date(chat.createdAt), "EEE, dd MMM yyyy")}
                 </p>
