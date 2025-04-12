@@ -5,6 +5,7 @@ import SpeechRecognition, {
 import MicIcon from "@mui/icons-material/Mic";
 import Webcam from "react-webcam";
 import { GoogleGenAI } from "@google/genai";
+import SideBar from "../components/SideBar";
 
 const key = import.meta.env.VITE_GEMINI_API_KEY;
 const ai = new GoogleGenAI({
@@ -136,30 +137,9 @@ export default function DashboardPage() {
 
   return (
     <div className="flex h-screen">
-      <div className="w-64 bg-gray-800 text-white">
-        <ul className="p-4">
-          <li className="mb-4">
-            <a href="#" className="hover:text-gray-400">
-              Home
-            </a>
-          </li>
-          <li className="mb-4">
-            <a href="#" className="hover:text-gray-400">
-              Profile
-            </a>
-          </li>
-          <li className="mb-4">
-            <a href="#" className="hover:text-gray-400">
-              Settings
-            </a>
-          </li>
-          <li className="mb-4">
-            <a href="#" className="hover:text-gray-400">
-              Logout
-            </a>
-          </li>
-        </ul>
-      </div>
+
+      <SideBar/>
+      
       <div className="flex-grow flex flex-col">
         <div className="flex-grow overflow-y-auto p-4 bg-gray-100 flex flex-col space-y-4">
           {messages.map((message, index) => (
