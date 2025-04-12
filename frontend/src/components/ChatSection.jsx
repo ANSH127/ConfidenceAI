@@ -7,6 +7,7 @@ import SpeechRecognition, {
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { initializeChat, fetchModelResponse } from "../config/AI";
+import Loadar from "./Loadar";
 
 export default function ChatSection() {
   const [messages, setMessages] = useState([]);
@@ -98,7 +99,7 @@ export default function ChatSection() {
       <div className="flex flex-col h-screen">
         {loading ? (
           <div className="flex justify-center items-center h-full">
-            <p>Loading...</p>
+            <Loadar />
           </div>
         ) : (
           <div className="flex-1 overflow-y-auto p-4 flex  flex-col space-y-2">
