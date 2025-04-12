@@ -99,6 +99,13 @@ const addMessage = async (req, res) => {
         if (!chat) {
             return res.status(404).json({ error: 'Chat not found' });
         }
+
+        // if messages length is greater than equal to 13 and response by model and response length greater than 50 then set iscompleted true
+        if (chat.messages.length >= 7 && message.role === 'model' && message.message.length > 50) {
+            chat.isCompleted = true;
+
+        }
+
         chat.messages.push(message);
         await chat.save();
         res.status(200).json(chat);
