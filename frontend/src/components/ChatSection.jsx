@@ -32,6 +32,7 @@ export default function ChatSection() {
           ...prevMessages,
           { role: "model", message: modelresponse },
         ]);
+        await handleSpeak(modelresponse);
         await addMessage(modelresponse,"model");
 
 
@@ -72,6 +73,20 @@ export default function ChatSection() {
       console.error("Error adding message:", error);
     }
   }
+  const handleSpeak = async (message) => {
+    // console.log(message);
+
+    const speech = new SpeechSynthesisUtterance(message);
+    console.log(speech);
+
+    speech.lang = "en-US";
+    speech.volume = 1;
+    speech.rate = 1;
+    speech.pitch = 1;
+    speech.voice = speechSynthesis.getVoices()[191];
+
+    await window.speechSynthesis.speak(speech);
+  };
 
 
 
