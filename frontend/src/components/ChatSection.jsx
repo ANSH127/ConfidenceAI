@@ -6,6 +6,7 @@ import SpeechRecognition, {
 } from "react-speech-recognition";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { initializeChat,fetchModelResponse } from "../config/AI";
 
 export default function ChatSection() {
   const [messages, setMessages] = useState([]);
@@ -20,11 +21,20 @@ export default function ChatSection() {
       SpeechRecognition.stopListening();
       if (transcript.trim()) {
 
-        await addMessage(transcript);
+        await addMessage(transcript,"user");
         setMessages((prevMessages) => [
           ...prevMessages,
           { role: "user", message: transcript },
         ]);
+
+        const modelresponse = await fetchModelResponse(transcript);
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { role: "model", message: modelresponse },
+        ]);
+        await addMessage(modelresponse,"model");
+
+
       }
       resetTranscript();
     } else {
@@ -44,18 +54,18 @@ export default function ChatSection() {
       console.error("Error fetching chat data:", error);
     }
   };
-  const addMessage = async (message) => {
+  const addMessage = async (message,role) => {
     try {
       const response = await axios.post(
         `http://localhost:3000/api/chat/${id}/message`,
         { message:{
-          role: "user",
+          role,
           message: message,
         } },
         { withCredentials: true }
       );
       const updatedChat = response.data;
-      console.log("Updated chat data:", updatedChat);
+      // console.log("Updated chat data:", updatedChat);
       
       // setMessages(updatedChat.messages);
     } catch (error) {
@@ -68,6 +78,10 @@ export default function ChatSection() {
 
   useEffect(() => {
     fetchChat();
+    const initialize = async () => {
+      await initializeChat();
+    };
+    initialize();
   }, [id]);
 
   return (
