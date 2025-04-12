@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import MicIcon from "@mui/icons-material/Mic";
-import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { initializeChat, fetchModelResponse } from "../config/AI";
@@ -90,10 +92,13 @@ export default function ChatSection() {
     await window.speechSynthesis.speak(speech);
   };
 
-  // Scroll to the bottom of the chat container
+  // Scroll to the bottom of the chat container with smooth animation
   const scrollToBottom = () => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      const lastMessage = chatContainerRef.current.lastElementChild;
+      if (lastMessage) {
+        lastMessage.scrollIntoView({ behavior: "smooth", block: "end" });
+      }
     }
   };
 
