@@ -9,19 +9,22 @@ import axios from "axios";
 
 export default function ChatSection() {
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
   const {
     transcript,
     listening,
-    resetTranscript,
-    browserSupportsSpeechRecognition,
+    resetTranscript
   } = useSpeechRecognition();
 
   const handleMicClick = async () => {
     if (listening) {
       SpeechRecognition.stopListening();
       if (transcript.trim()) {
-        setMessages([...messages, { text: transcript, role: "user" }]);
+
+        await addMessage(transcript);
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { role: "user", message: transcript },
+        ]);
       }
       resetTranscript();
     } else {
@@ -41,6 +44,28 @@ export default function ChatSection() {
       console.error("Error fetching chat data:", error);
     }
   };
+  const addMessage = async (message) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:3000/api/chat/${id}/message`,
+        { message:{
+          role: "user",
+          message: message,
+        } },
+        { withCredentials: true }
+      );
+      const updatedChat = response.data;
+      console.log("Updated chat data:", updatedChat);
+      
+      // setMessages(updatedChat.messages);
+    } catch (error) {
+      console.error("Error adding message:", error);
+    }
+  }
+
+
+
+
   useEffect(() => {
     fetchChat();
   }, [id]);
