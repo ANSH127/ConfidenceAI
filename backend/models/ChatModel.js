@@ -34,6 +34,10 @@ const chatSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+    isCompleted: {
+        type: Boolean,
+        default: false,
+    },
 
 });
 const ChatModel = mongoose.model('Chat', chatSchema);
