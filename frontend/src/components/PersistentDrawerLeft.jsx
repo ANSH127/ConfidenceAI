@@ -110,18 +110,6 @@ export default function PersistentDrawerLeft({ children }) {
   };
 
   const opennewchat = async () => {
-    // try {
-    //   const response = await axios.post(
-    //     "http://localhost:3000/api/chat/create",
-    //     {},
-    //     { withCredentials: true }
-    //   );
-    //   // console.log(response.data);
-    //   setRecentChats((prevChats) => [response.data, ...prevChats]);
-    //   navigate(`/c/${response.data.chatId}`);
-    // } catch (error) {
-    //   console.error("Error creating new chat:", error);
-    // }
     setModalOpen(true);
   };
 

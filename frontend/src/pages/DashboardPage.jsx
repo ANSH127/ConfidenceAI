@@ -2,27 +2,20 @@ import React from "react";
 import PersistentDrawerLeft from "../components/PersistentDrawerLeft";
 import AIBot from "../assets/images/Ai_bot.webp";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import PreviewModal from "../components/PreviewModal";
 
 export default function DashboardPage() {
-  const navigate = useNavigate();
+  const [modalOpen, setModalOpen] = React.useState(false);
+    const handleCloseModal = () => {
+      setModalOpen(false);
+    };
 
-  const handleStartInterview = async () => {
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/api/chat/create",
-        {},
-        { withCredentials: true }
-      );
-      navigate(`/c/${response.data.chatId}`);
-    } catch (error) {
-      console.error("Error creating new chat:", error);
-    }
-  };
+  
   return (
     <div>
       <PersistentDrawerLeft>
+        <PreviewModal open={modalOpen} handleClose={handleCloseModal} />
+
         <div className="flex flex-col items-center justify-center h-screen ">
           {/* Animated Image */}
           <motion.div
@@ -72,7 +65,7 @@ export default function DashboardPage() {
             whileTap={{ scale: 0.9 }}
             transition={{ duration: 0.5, delay: 1.5 }}
             className="mt-6 bg-blue-500 text-white px-8 py-4 rounded-full shadow-lg hover:bg-blue-600 transition-all duration-300"
-            onClick={handleStartInterview}
+            onClick={() => setModalOpen(true)}
           >
             Start Mock Interview
           </motion.button>
