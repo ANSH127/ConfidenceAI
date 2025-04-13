@@ -25,4 +25,15 @@ Router.get('/check',async(req,res)=>{
 
 });
 
+
+Router.post('/logout',async(req,res)=>{
+    try{
+        res.cookie('jwt','',{maxAge:-1});
+        res.status(200).json({logout:true});
+    }catch(err){
+        console.error(err);
+        res.status(500).json({error:'Internal server error'});
+    }
+});
+
 module.exports=Router;
