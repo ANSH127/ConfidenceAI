@@ -3,14 +3,34 @@ import PersistentDrawerLeft from "../components/PersistentDrawerLeft";
 import AIBot from "../assets/images/Ai_bot.webp";
 import { motion } from "framer-motion";
 import PreviewModal from "../components/PreviewModal";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function DashboardPage() {
+  const navigate = useNavigate();
   const [modalOpen, setModalOpen] = React.useState(false);
-    const handleCloseModal = () => {
-      setModalOpen(false);
-    };
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
 
-  
+  const isUserLoggedIn = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/auth/check", {
+        withCredentials: true,
+      });
+      if (!response.data.authenticated) {
+        navigate("/login");
+      } 
+    } catch (error) {
+      console.error("Error checking authentication:", error);
+      navigate("/login");
+    }
+  };
+
+  React.useEffect(() => {
+    isUserLoggedIn();
+  }, []);
+
   return (
     <div>
       <PersistentDrawerLeft>

@@ -2,8 +2,10 @@ import React from "react";
 import Image1 from "../assets/images/signup.jpg";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
+  const navigate = useNavigate();
 
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -31,25 +33,20 @@ export default function LoginPage() {
       const response = await axios.post(
         "http://localhost:3000/api/user/login",
         user,
-        {withCredentials: true}
+        { withCredentials: true }
       );
-      if(response.status==200){
-        alert("User logged in successfully");
-      }else{
+      if (response.status == 200) {
+        navigate("/");
+      } else {
         alert(response.data.error);
       }
-      console.log(document.cookie.jwt);
-      
-      console.log(response.data);
-   
-      
       setEmail("");
       setPassword("");
     } catch (error) {
       console.log(error);
       alert("Error logging in");
     }
-  }
+  };
   return (
     <div>
       <div className=" grid  md:grid-cols-2">
@@ -95,8 +92,9 @@ export default function LoginPage() {
               </p>
             </div>
 
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded  justify-center"
-            onClick={handleLogin}
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded  justify-center"
+              onClick={handleLogin}
             >
               Login
             </button>

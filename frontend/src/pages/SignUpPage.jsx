@@ -3,11 +3,13 @@ import Image1 from "../assets/images/signup.jpg";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUpPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async () => {
     if (!name || !email || !password) {
@@ -36,6 +38,7 @@ export default function SignUpPage() {
       );
       if(response.status==200){
         alert("User created successfully");
+        navigate("/login");
       }else{
         alert(response.data.error);
       }

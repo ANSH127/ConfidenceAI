@@ -23,6 +23,7 @@ import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import axios from "axios";
 import { format } from "date-fns";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import { useNavigate } from "react-router-dom";
 
 import PreviewModal from "./PreviewModal";
@@ -138,13 +139,8 @@ export default function PersistentDrawerLeft({ children }) {
   };
 
   return (
-    
     <Box sx={{ display: "flex" }}>
-      <PreviewModal 
-        open={modalOpen}
-        handleClose={handleCloseModal}
-       
-       />
+      <PreviewModal open={modalOpen} handleClose={handleCloseModal} />
       <CssBaseline />
       <AppBar position="fixed" open={open} color="transparent">
         <Toolbar>
@@ -200,6 +196,14 @@ export default function PersistentDrawerLeft({ children }) {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
+            <ListItemButton onClick={() => navigate("/logout")}>
+              <ListItemIcon>
+                <LogoutRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Logout"} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
             <ListItemButton onClick={opennewchat}>
               <ListItemIcon>
                 <AddCircleRoundedIcon />
@@ -239,4 +243,3 @@ export default function PersistentDrawerLeft({ children }) {
     </Box>
   );
 }
-

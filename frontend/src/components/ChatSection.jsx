@@ -8,6 +8,7 @@ import axios from "axios";
 import { initializeChat, fetchModelResponse } from "../config/AI";
 import Loadar from "./Loadar";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 export default function ChatSection() {
   const [messages, setMessages] = useState([]);
@@ -17,6 +18,7 @@ export default function ChatSection() {
   const [selectedDomain, setSelectedDomain] = useState("");
   const [selectedExperience, setSelectedExperience] = useState("");
   const [selectedQuestionStyle, setSelectedQuestionStyle] = useState("");
+  const navigate = useNavigate();
 
   // Ref for the chat container
   const chatContainerRef = useRef(null);
@@ -72,6 +74,12 @@ export default function ChatSection() {
       setSelectedExperience(chatData.selected_experience);
       setSelectedQuestionStyle(chatData.selected_questionStyle);
     } catch (error) {
+      if (error.response && error.response.status === 401) {
+        alert("Session expired, please login again");
+        navigate("/login");
+        return;
+      }
+
       console.error("Error fetching chat data:", error);
     } finally {
       setLoading(false);
