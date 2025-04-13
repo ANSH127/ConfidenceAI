@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import PreviewModal from "../components/PreviewModal";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Performance from "../components/Performance";
 
 export default function DashboardPage() {
   const navigate = useNavigate();
@@ -103,6 +104,12 @@ export default function DashboardPage() {
             </p>
           </motion.div>
         </div>
+
+
+        {/* “How You Performed” */}
+        <Performance/>
+        
+
       </PersistentDrawerLeft>
     </div>
   );
