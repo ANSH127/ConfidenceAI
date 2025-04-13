@@ -22,15 +22,11 @@ import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import axios from "axios";
 import { format } from "date-fns";
-import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import { useNavigate } from "react-router-dom";
-const drawerWidth = 240;
 
-const recentchats = [
-  { id: 1, name: "Chat 1" },
-  { id: 2, name: "Chat 2" },
-  { id: 3, name: "Chat 3" },
-];
+import PreviewModal from "./PreviewModal";
+const drawerWidth = 240;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme }) => ({
@@ -114,22 +110,22 @@ export default function PersistentDrawerLeft({ children }) {
   };
 
   const opennewchat = async () => {
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/api/chat/create",
-        {},
-        { withCredentials: true }
-      );
-      // console.log(response.data);
-      setRecentChats((prevChats) => [response.data, ...prevChats]);
-      navigate(`/c/${response.data.chatId}`);
-    } catch (error) {
-      console.error("Error creating new chat:", error);
-    }
+    // try {
+    //   const response = await axios.post(
+    //     "http://localhost:3000/api/chat/create",
+    //     {},
+    //     { withCredentials: true }
+    //   );
+    //   // console.log(response.data);
+    //   setRecentChats((prevChats) => [response.data, ...prevChats]);
+    //   navigate(`/c/${response.data.chatId}`);
+    // } catch (error) {
+    //   console.error("Error creating new chat:", error);
+    // }
+    setModalOpen(true);
   };
 
   const handledeleteChat = async (chatId) => {
-
     try {
       const response = await axios.delete(
         `http://localhost:3000/api/chat/${chatId}`,
@@ -142,15 +138,25 @@ export default function PersistentDrawerLeft({ children }) {
     } catch (error) {
       console.error("Error deleting chat:", error);
     }
-    
-  }
+  };
 
   React.useEffect(() => {
     fetchRecentChats();
   }, []);
 
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
   return (
+    
     <Box sx={{ display: "flex" }}>
+      <PreviewModal 
+        open={modalOpen}
+        handleClose={handleCloseModal}
+       
+       />
       <CssBaseline />
       <AppBar position="fixed" open={open} color="transparent">
         <Toolbar>
@@ -197,7 +203,7 @@ export default function PersistentDrawerLeft({ children }) {
         </DrawerHeader>
         <Divider />
         <List>
-        <ListItem disablePadding>
+          <ListItem disablePadding>
             <ListItemButton onClick={() => navigate("/")}>
               <ListItemIcon>
                 <HomeRoundedIcon />
@@ -213,7 +219,6 @@ export default function PersistentDrawerLeft({ children }) {
               <ListItemText primary={"New Chat"} />
             </ListItemButton>
           </ListItem>
-          
         </List>
         <Divider />
         <span className="text-black text-md pl-4 font-bold pt-2 ">
@@ -229,10 +234,11 @@ export default function PersistentDrawerLeft({ children }) {
                 >
                   {format(new Date(chat.createdAt), "EEE, dd MMM yyyy")}
                 </p>
-                <DeleteRoundedIcon  color="error" className="ml-auto mr-4 hover:text-red-800"
-                onClick={()=>handledeleteChat(chat.chatId)}
-                 />
-
+                <DeleteRoundedIcon
+                  color="error"
+                  className="ml-auto mr-4 hover:text-red-800"
+                  onClick={() => handledeleteChat(chat.chatId)}
+                />
               </button>
             </ListItem>
           ))}
@@ -245,3 +251,4 @@ export default function PersistentDrawerLeft({ children }) {
     </Box>
   );
 }
+
