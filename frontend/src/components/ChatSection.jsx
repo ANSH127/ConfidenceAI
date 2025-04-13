@@ -190,7 +190,7 @@ export default function ChatSection() {
           </>
         )}
         {iscompleted ? (
-          <div className="flex flex-col items-center bg-green-500 text-white p-4 rounded-md">
+          <div className="flex flex-col items-center bg-green-400 text-white p-4 rounded-md">
           <h2 className="text-lg font-bold">Interview Completed</h2>
           <div className="bg-white text-black p-4 rounded-md mt-4 w-full max-w-md shadow-md">
             <h3 className="text-center text-lg font-semibold mb-4">Your Scores</h3>
