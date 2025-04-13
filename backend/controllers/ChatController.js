@@ -105,9 +105,9 @@ const addMessage = async (req, res) => {
         }
 
         // if messages length is greater than equal to 13 and response by model and response length greater than 50 then set iscompleted true
-        if (chat.messages.length >= 7 && message.role === 'model' && message.message.length > 50) {
+        if (message.role === 'model' && message.message.length > 50 && message.message.includes("Interview Completed")) {
             chat.isCompleted = true;
-
+            findScoreAndUpdate(message,chatId);
         }
 
         chat.messages.push(message);
@@ -117,6 +117,46 @@ const addMessage = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 }
+
+
+
+/*
+ * Vocabulary: 5
+* Content quality: 3
+* Confidence: 4
+* Clarity and structure of response: 2
+
+*/
+
+const findScoreAndUpdate = async (message,chatid) => {
+    const score = message.message.match(/Vocabulary: (\d+)/);
+    const contentQuality = message.message.match(/Content quality: (\d+)/);
+    const confidence = message.message.match(/Confidence: (\d+)/);
+    const clarity = message.message.match(/Clarity and structure of response: (\d+)/);
+    const vocabulary = score ? parseInt(score[1]) : 0;
+    const content = contentQuality ? parseInt(contentQuality[1]) : 0;
+    const confidenceScore = confidence ? parseInt(confidence[1]) : 0;
+    const clarityScore = clarity ? parseInt(clarity[1]) : 0;
+
+    // update the chat with the score
+    await ChatModel.findOneAndUpdate(
+        { chatId: chatid },
+        {
+            $set: {
+                score: {
+                    vocubulary: vocabulary,
+                    content: content,
+                    confidence: confidenceScore,
+                    clarity: clarityScore,
+                },
+            },
+        },
+        { new: true }
+    );
+    console.log("Score updated successfully");
+
+}
+
 
 
 module.exports = {
