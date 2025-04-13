@@ -7,12 +7,16 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { initializeChat, fetchModelResponse } from "../config/AI";
 import Loadar from "./Loadar";
+import { motion } from "framer-motion";
 
 export default function ChatSection() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const { transcript, listening, resetTranscript } = useSpeechRecognition();
   const [iscompleted, setIsCompleted] = useState(false);
+  const [selectedDomain, setSelectedDomain] = useState("");
+  const [selectedExperience, setSelectedExperience] = useState("");
+  const [selectedQuestionStyle, setSelectedQuestionStyle] = useState("");
 
   // Ref for the chat container
   const chatContainerRef = useRef(null);
@@ -55,16 +59,18 @@ export default function ChatSection() {
       });
       const chatData = response.data;
 
-     const obj={
+      const obj = {
         selected_domain: chatData?.selected_domain,
         selected_experience: chatData?.selected_experience,
         selected_questionStyle: chatData?.selected_questionStyle,
       };
-      
-      
-      await initializeChat(chatData.messages,obj);
+
+      await initializeChat(chatData.messages, obj);
       setMessages(chatData.messages);
       setIsCompleted(chatData.isCompleted);
+      setSelectedDomain(chatData.selected_domain);
+      setSelectedExperience(chatData.selected_experience);
+      setSelectedQuestionStyle(chatData.selected_questionStyle);
     } catch (error) {
       console.error("Error fetching chat data:", error);
     } finally {
@@ -126,23 +132,37 @@ export default function ChatSection() {
             <Loadar />
           </div>
         ) : (
-          <div
-            ref={chatContainerRef} // Attach the ref to the chat container
-            className="flex-1 overflow-y-auto p-4 flex flex-col space-y-2"
-          >
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`mb-4 p-2 rounded-lg max-w-xs ${
-                  message.role === "user"
-                    ? "bg-blue-500 text-white self-end"
-                    : "bg-gray-200 text-gray-800 self-start"
-                }`}
+          <>
+            <div className="flex bg-red-300 p-4 rounded-md mb-4">
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="text-sm text-black font-semibold"
               >
-                {message.message}
-              </div>
-            ))}
-          </div>
+                Domain: {selectedDomain} | Experience: {selectedExperience} |
+                Question Style: {selectedQuestionStyle}
+              </motion.div>
+            </div>
+
+            <div
+              ref={chatContainerRef} // Attach the ref to the chat container
+              className="flex-1 overflow-y-auto p-4 flex flex-col space-y-2"
+            >
+              {messages.map((message, index) => (
+                <div
+                  key={index}
+                  className={`mb-4 p-2 rounded-lg max-w-xs ${
+                    message.role === "user"
+                      ? "bg-blue-500 text-white self-end"
+                      : "bg-gray-200 text-gray-800 self-start"
+                  }`}
+                >
+                  {message.message}
+                </div>
+              ))}
+            </div>
+          </>
         )}
         {iscompleted ? (
           <div className="flex justify-center items-center bg-green-500 text-white p-2 rounded-md">
