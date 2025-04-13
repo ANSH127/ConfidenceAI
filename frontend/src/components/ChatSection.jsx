@@ -18,6 +18,12 @@ export default function ChatSection() {
   const [selectedDomain, setSelectedDomain] = useState("");
   const [selectedExperience, setSelectedExperience] = useState("");
   const [selectedQuestionStyle, setSelectedQuestionStyle] = useState("");
+  const [scores, setScores] = useState({
+    vocabulary: 0,
+    content: 0,
+    confidence: 0,
+    clarity: 0,
+  });
   const navigate = useNavigate();
 
   // Ref for the chat container
@@ -73,6 +79,15 @@ export default function ChatSection() {
       setSelectedDomain(chatData.selected_domain);
       setSelectedExperience(chatData.selected_experience);
       setSelectedQuestionStyle(chatData.selected_questionStyle);
+
+      if (chatData.isCompleted) {
+        setScores({
+          vocabulary: chatData.score.vocubulary,
+          content: chatData.score.content,
+          confidence: chatData.score.confidence,
+          clarity: chatData.score.clarity,
+        });
+      }
     } catch (error) {
       if (error.response && error.response.status === 401) {
         alert("Session expired, please login again");
@@ -166,19 +181,70 @@ export default function ChatSection() {
                       : "bg-gray-200 text-gray-800 self-start"
                   }`}
                 >
-                  <pre
-                    className="whitespace-pre-wrap break-words "
-                   
-                  >{message.message}</pre>
+                  <pre className="whitespace-pre-wrap break-words ">
+                    {message.message}
+                  </pre>
                 </div>
               ))}
             </div>
           </>
         )}
         {iscompleted ? (
-          <div className="flex justify-center items-center bg-green-500 text-white p-2 rounded-md">
-            Interview Completed
+          <div className="flex flex-col items-center bg-green-500 text-white p-4 rounded-md">
+          <h2 className="text-lg font-bold">Interview Completed</h2>
+          <div className="bg-white text-black p-4 rounded-md mt-4 w-full max-w-md shadow-md">
+            <h3 className="text-center text-lg font-semibold mb-4">Your Scores</h3>
+            <div className="flex flex-row gap-4 justify-between">
+              {/* Vocabulary Score */}
+              <div className="flex flex-col items-center w-1/4">
+                <p className="text-sm font-semibold mb-2">Vocabulary</p>
+                <div className="w-full bg-gray-200 rounded-full h-4">
+                  <div
+                    className="bg-blue-500 h-4 rounded-full"
+                    style={{ width: `${scores.vocabulary * 10}%` }}
+                  ></div>
+                </div>
+                <p className="text-center text-xs mt-1">{scores.vocabulary * 10}%</p>
+              </div>
+        
+              {/* Content Score */}
+              <div className="flex flex-col items-center w-1/4">
+                <p className="text-sm font-semibold mb-2">Content</p>
+                <div className="w-full bg-gray-200 rounded-full h-4">
+                  <div
+                    className="bg-blue-500 h-4 rounded-full"
+                    style={{ width: `${scores.content * 10}%` }}
+                  ></div>
+                </div>
+                <p className="text-center text-xs mt-1">{scores.content * 10}%</p>
+              </div>
+        
+              {/* Confidence Score */}
+              <div className="flex flex-col items-center w-1/4">
+                <p className="text-sm font-semibold mb-2">Confidence</p>
+                <div className="w-full bg-gray-200 rounded-full h-4">
+                  <div
+                    className="bg-blue-500 h-4 rounded-full"
+                    style={{ width: `${scores.confidence * 10}%` }}
+                  ></div>
+                </div>
+                <p className="text-center text-xs mt-1">{scores.confidence * 10}%</p>
+              </div>
+        
+              {/* Clarity Score */}
+              <div className="flex flex-col items-center w-1/4">
+                <p className="text-sm font-semibold mb-2">Clarity</p>
+                <div className="w-full bg-gray-200 rounded-full h-4">
+                  <div
+                    className="bg-blue-500 h-4 rounded-full"
+                    style={{ width: `${scores.clarity * 10}%` }}
+                  ></div>
+                </div>
+                <p className="text-center text-xs mt-1">{scores.clarity * 10}%</p>
+              </div>
+            </div>
           </div>
+        </div>
         ) : (
           <div className="flex flex-col pb-2 items-center bg-gray-100 rounded-md">
             <div className="mb-2 p-2 w-full text-center">{transcript}</div>
