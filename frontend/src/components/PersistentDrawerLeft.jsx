@@ -120,7 +120,7 @@ export default function PersistentDrawerLeft({ children }) {
         {},
         { withCredentials: true }
       );
-      console.log(response.data);
+      // console.log(response.data);
       setRecentChats((prevChats) => [response.data, ...prevChats]);
       navigate(`/c/${response.data.chatId}`);
     } catch (error) {
