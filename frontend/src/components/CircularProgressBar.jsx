@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-const CircularProgressBar = ({ percentage, label }) => {
+const CircularProgressBar = ({ percentage, label, color }) => {
   const circleRadius = 50; // Radius of the circle
   const circleCircumference = 2 * Math.PI * circleRadius; // Circumference of the circle
 
@@ -28,7 +28,7 @@ const CircularProgressBar = ({ percentage, label }) => {
           cy="60"
           r={circleRadius}
           fill="transparent"
-          stroke="#3b82f6" // Blue color for progress
+          stroke={`url(#gradient-${label})`} // Use gradient for stroke
           strokeWidth="10"
           strokeDasharray={circleCircumference}
           strokeDashoffset={circleCircumference}
@@ -38,6 +38,13 @@ const CircularProgressBar = ({ percentage, label }) => {
           }}
           transition={{ duration: 1, ease: "easeOut" }}
         />
+        {/* Gradient Definition */}
+        <defs>
+          <linearGradient id={`gradient-${label}`} x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor={color.split(",")[0]} />
+            <stop offset="100%" stopColor={color.split(",")[1]} />
+          </linearGradient>
+        </defs>
       </svg>
       {/* Percentage and Label */}
       <p className="text-lg font-bold mt-2">{percentage}%</p>
