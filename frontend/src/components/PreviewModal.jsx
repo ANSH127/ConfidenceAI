@@ -2,6 +2,8 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const style = {
   position: "absolute",
@@ -19,9 +21,27 @@ export default function PreviewModal({ open, handleClose }) {
   const [domain, setDomain] = useState("Software Development");
   const [experience, setExperience] = useState("Beginner");
   const [questionStyle, setQuestionStyle] = useState("Behavioral");
+  const navigate = useNavigate();
 
-  const handleSubmit = () => {
-    console.log(domain, experience, questionStyle);
+  const handleSubmit = async() => {
+    // console.log(domain, experience, questionStyle);
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/chat/create",
+        {
+          selected_domain: domain,
+          selected_experience: experience,
+          selected_questionStyle: questionStyle,
+        },
+        { withCredentials: true }
+      );
+      // console.log(response.data);
+      // Handle successful response here, e.g., navigate to the chat page
+      navigate(`/c/${response.data.chatId}`);
+    } catch (error) {
+      console.error("Error creating new chat:", error);
+    }
+    handleClose();
   };
 
   return (

@@ -54,7 +54,15 @@ export default function ChatSection() {
         withCredentials: true,
       });
       const chatData = response.data;
-      await initializeChat(chatData.messages);
+
+     const obj={
+        selected_domain: chatData?.selected_domain,
+        selected_experience: chatData?.selected_experience,
+        selected_questionStyle: chatData?.selected_questionStyle,
+      };
+      
+      
+      await initializeChat(chatData.messages,obj);
       setMessages(chatData.messages);
       setIsCompleted(chatData.isCompleted);
     } catch (error) {

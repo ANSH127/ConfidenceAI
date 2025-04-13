@@ -10,12 +10,12 @@ export const fetchModelResponse = async (message) => {
   let result = await chat.sendMessage({
     message: message,
   });
-  console.log(result.text);
+  // console.log(result.text);
 
   return result.text;
 };
 
-export const initializeChat = async (previouschats) => {
+export const initializeChat = async (previouschats,prefered) => {
   let chathistory = [
     {
       role: "user",
@@ -24,6 +24,12 @@ export const initializeChat = async (previouschats) => {
           text: `
 
 You are an AI Interview Coach designed to help users improve their interview skills through text-based mock interviews. You will act as the interviewer and evaluate the user's responses based only on their content, vocabulary, confidence, and clarity. Webcam or body language data is not available.
+
+User's background:
+- Domain: ${prefered.selected_domain? prefered.selected_domain: "Software Development"}
+- Experience: ${prefered.selected_experience? prefered.selected_experience: "Beginner"}
+- Question Style: ${prefered.selected_questionStyle? prefered.selected_questionStyle: "Technical"}
+
 
 Your responsibilities:  
 - Ask two commonly asked interview questions one by one.  
