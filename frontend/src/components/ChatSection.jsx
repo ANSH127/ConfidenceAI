@@ -158,7 +158,10 @@ export default function ChatSection() {
                       : "bg-gray-200 text-gray-800 self-start"
                   }`}
                 >
-                  {message.message}
+                  <pre
+                    className="whitespace-pre-wrap break-words "
+                   
+                  >{message.message}</pre>
                 </div>
               ))}
             </div>
