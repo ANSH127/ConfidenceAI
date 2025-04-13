@@ -39,6 +39,19 @@ const chatSchema = new mongoose.Schema({
         default: false,
     },
 
+    selected_domain: {
+        type: String,
+        required: true,
+    },
+    selected_experience: {
+        type: String,
+        required: true,
+    },
+    selected_questionStyle: {
+        type: String,
+        required: true,
+    },
+
 });
 const ChatModel = mongoose.model('Chat', chatSchema);
 module.exports = ChatModel;

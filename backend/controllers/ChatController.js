@@ -9,6 +9,10 @@ const createChat = async (req, res) => {
     // genrate a random chatId
     const chatId = uuidv4();
     const userId = user._id;
+    const { selected_domain, selected_experience, selected_questionStyle } = req.body;
+    if (!selected_domain || !selected_experience || !selected_questionStyle) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
 
     // create a new chat
 
@@ -18,7 +22,7 @@ const createChat = async (req, res) => {
     }
     // create a new chat
     try {
-        const chat = await ChatModel.create({ userId, chatId });
+        const chat = await ChatModel.create({ userId, chatId, selected_domain, selected_experience, selected_questionStyle });
         chat.messages.push({
             role: 'model',
             message: 'Type "Start" to begin your mock interview!',
