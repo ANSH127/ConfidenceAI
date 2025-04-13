@@ -129,6 +129,23 @@ export default function PersistentDrawerLeft({ children }) {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/auth/logout",
+        {},
+        { withCredentials: true }
+      );
+      if (response.status === 200) {
+        navigate("/login");
+      } else {
+        alert(response.data.error);
+      }
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
+
   React.useEffect(() => {
     fetchRecentChats();
   }, []);
@@ -196,7 +213,7 @@ export default function PersistentDrawerLeft({ children }) {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton onClick={() => navigate("/logout")}>
+            <ListItemButton onClick={handleLogout}>
               <ListItemIcon>
                 <LogoutRoundedIcon />
               </ListItemIcon>
