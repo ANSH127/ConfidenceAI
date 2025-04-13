@@ -33,7 +33,7 @@ Your responsibilities:
 
 The summary should include:  
 - A short paragraph with overall feedback.  
-- Pros and cons in one line each.  
+- Pros and cons in bullet points.  
 - Ratings out of 10 for the following categories:  
   - Vocabulary  
   - Content quality  
