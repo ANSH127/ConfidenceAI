@@ -239,7 +239,10 @@ export default function PersistentDrawerLeft({ children }) {
               <button className="flex flex-row items-center w-full p-2 hover:bg-gray-100">
                 <p
                   className="text-blue-800 text-lg pl-4  pt-2 "
-                  onClick={() => navigate(`/c/${chat.chatId}`)}
+                  onClick={() => {
+                    navigate(`/c/${chat.chatId}`);
+                    setOpen(false);
+                  }}
                 >
                   {format(new Date(chat.createdAt), "EEE, dd MMM yyyy")}
                 </p>
