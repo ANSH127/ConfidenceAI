@@ -9,6 +9,7 @@ export default function Webcam() {
   const [detector, setDetector] = useState(null);
   const [boxColor, setBoxColor] = useState("red"); // Box color state
   const [isCheating, setIsCheating] = useState(false); // Cheating state
+  const [isFaceDetected, setIsFaceDetected] = useState(false); // Face detection state
 
   // Initialize the webcam and canvas
   const setupCamera = async () => {
@@ -125,6 +126,8 @@ export default function Webcam() {
         return;
       }
 
+      setIsFaceDetected(true);
+
       // Draw bounding box
       predictions.forEach((prediction) => {
         const keypoints = prediction.keypoints;
@@ -185,10 +188,13 @@ export default function Webcam() {
           className="absolute top-0 left-0"
           style={{ width: "350px", height: "300px" }}
         ></canvas>
+       
         <h1>
-          {isCheating
-            ? "Cheating Detected! Please look at the camera."
-            : "Looking Good!"}
+          {!isFaceDetected? "No face detected! Please look at the camera.":
+          isCheating? "Cheating Detected! Please look at the camera.":
+          "Looking Good!"
+
+          }
         </h1>
       </div>
     </div>

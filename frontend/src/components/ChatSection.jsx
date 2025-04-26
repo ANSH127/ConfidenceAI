@@ -157,7 +157,9 @@ export default function ChatSection() {
           </div>
         ) : (
           <>
-            <div className="col-span-9 overflow-y-auto">
+            <div className={`
+            ${iscompleted ? "col-span-12" : "col-span-9"}
+               overflow-y-auto`}>
               <div className="flex bg-red-300 p-4 rounded-md mb-4">
                 <motion.div
                   initial={{ opacity: 0, y: -20 }}
@@ -275,9 +277,12 @@ export default function ChatSection() {
                 </div>
               )}
             </div>
-            <div className="col-span-3 p-4">
+            {
+              !iscompleted &&
+              <div className="col-span-3 p-4">
+              
               <Webcam />
-            </div>
+            </div>}
           </>
         )}
       </div>
