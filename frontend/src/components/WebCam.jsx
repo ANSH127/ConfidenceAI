@@ -3,6 +3,7 @@ import * as tf from "@tensorflow/tfjs";
 import * as faceLandmarksDetection from "@tensorflow-models/face-landmarks-detection";
 import "@tensorflow/tfjs-backend-webgl";
 
+
 export default function Webcam() {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -10,6 +11,7 @@ export default function Webcam() {
   const [boxColor, setBoxColor] = useState("red"); // Box color state
   const [isCheating, setIsCheating] = useState(false); // Cheating state
   const [isFaceDetected, setIsFaceDetected] = useState(false); // Face detection state
+  
 
   // Initialize the webcam and canvas
   const setupCamera = async () => {
@@ -156,6 +158,20 @@ export default function Webcam() {
         if (distanceX < 50 && distanceY < 50) {
           setBoxColor("green");
         } else {
+
+          // If the face is not centered, mark as cheating
+          setIsCheating((prev) => {
+            if (prev) {
+              return true;
+            } else {
+              setTimeout(() => {
+                setIsCheating(false);
+              }, 5000);
+              return true;
+            }
+          });
+
+
           setBoxColor("red");
         }
 
@@ -171,6 +187,8 @@ export default function Webcam() {
     const interval = setInterval(detectFaces, 100); // Run detection every 100ms
     return () => clearInterval(interval);
   }, [detector, boxColor]);
+
+  
 
   return (
     <div className="flex flex-col items-center">
