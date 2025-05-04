@@ -1,14 +1,37 @@
 import React from "react";
 import CircularProgressBar from "./CircularProgressBar";
 import { motion } from "framer-motion";
+import axios from "axios";
 
 export default function Performance() {
-  let scores = {
-    vocabulary: 5,
-    content: 7,
-    confidence: 7,
-    clarity: 6,
-  };
+  const [scores, setScores] = React.useState({
+    vocabulary: 0,
+    content: 0,
+    confidence: 0,
+    clarity: 0,
+  });
+
+  const fetchScores = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/user/score",{
+        withCredentials: true,
+      });
+      if (response.data) {
+        setScores({
+          vocabulary: response.data.vocubulary,
+          content: response.data.content,
+          confidence: response.data.confidence,
+          clarity: response.data.clarity,
+        });
+      }
+      
+    } catch (error) {
+      console.error("Error fetching scores:", error);
+    }
+  }
+  React.useEffect(() => {
+    fetchScores();
+  }, []);
 
   return (
     <motion.div
