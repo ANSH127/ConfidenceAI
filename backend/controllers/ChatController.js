@@ -105,7 +105,7 @@ const addMessage = async (req, res) => {
         }
 
         // if messages length is greater than equal to 13 and response by model and response length greater than 50 then set iscompleted true
-        if (message.role === 'model' && message.message.length > 50 && message.message.includes("Interview Completed")) {
+        if (message.role === 'model' && message.message.length > 50 && (message.message.includes("Interview Completed") || message.message.includes("Interview completed"))) {
             chat.isCompleted = true;
             findScoreAndUpdate(message,chatId);
         }

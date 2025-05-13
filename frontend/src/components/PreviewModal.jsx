@@ -105,6 +105,7 @@ export default function PreviewModal({ open, handleClose }) {
                 <option value="Beginner">Beginner</option>
                 <option value="Intermediate">Intermediate</option>
                 <option value="Advanced">Advanced</option>
+                
               </select>
             </div>
 
@@ -126,6 +127,7 @@ export default function PreviewModal({ open, handleClose }) {
                 <option value="Behavioral">Behavioral</option>
                 <option value="Technical">Technical</option>
                 <option value="Mixed">Mixed</option>
+                <option value="Code Test">Code Test</option>
               </select>
             </div>
 

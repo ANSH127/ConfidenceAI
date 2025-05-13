@@ -54,7 +54,7 @@ export default function ChatSection() {
           { role: "model", message: modelresponse },
         ]);
 
-        if (modelresponse.includes("Interview Completed")) {
+        if (modelresponse.includes("Interview Completed") || modelresponse.includes("Interview completed")) {
           setIsCompleted(true);
         }
 
@@ -150,7 +150,26 @@ export default function ChatSection() {
 
  const handleSubmitCode = async () => {
   if (editorRef.current) {
-    alert("Code submitted: " + editorRef.current.getValue());
+    let code = editorRef.current.getValue();
+    setShowEditor(false); // Hide the editor after submission
+    await addMessage(code, "user");
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { role: "user", message: code },
+    ]);
+    const modelresponse = await fetchModelResponse(code);
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { role: "model", message: modelresponse },
+    ]);
+    await handleSpeak(modelresponse);
+    await addMessage(modelresponse, "model");
+    if (modelresponse.includes("Interview Completed") || modelresponse.includes("Interview completed")) {
+      setIsCompleted(true);
+    }
+    scrollToBottom(); // Scroll to the bottom after sending the code
+
+    
   } else {
     alert("Editor is not ready yet!");
   }
