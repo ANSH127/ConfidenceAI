@@ -10,6 +10,11 @@ import Loadar from "./Loadar";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Webcam from "./WebCam";
+import CodeEditor from "./CodeEditor";
+import Switch from '@mui/material/Switch';
+import FormControlLabel from '@mui/material/FormControlLabel';
+
+
 
 export default function ChatSection() {
   const [messages, setMessages] = useState([]);
@@ -25,7 +30,10 @@ export default function ChatSection() {
     confidence: 0,
     clarity: 0,
   });
+  const [showeditor, setShowEditor] = useState(false);
   const navigate = useNavigate();
+  const editorRef = useRef(null);
+  
 
   // Ref for the chat container
   const chatContainerRef = useRef(null);
@@ -140,6 +148,14 @@ export default function ChatSection() {
     }
   };
 
+ const handleSubmitCode = async () => {
+  if (editorRef.current) {
+    alert("Code submitted: " + editorRef.current.getValue());
+  } else {
+    alert("Editor is not ready yet!");
+  }
+};
+
   useEffect(() => {
     fetchChat();
   }, [id]);
@@ -157,132 +173,164 @@ export default function ChatSection() {
           </div>
         ) : (
           <>
-            <div className={`
+            <div
+              className={`
             ${iscompleted ? "col-span-12" : "col-span-9"}
-               overflow-y-auto`}>
-              <div className="flex bg-red-300 p-4 rounded-md mb-4">
-                <motion.div
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, ease: "easeOut" }}
-                  className="text-sm text-black font-semibold"
+               overflow-y-auto`}
+            >
+              {showeditor ? (
+                <>
+                <FormControlLabel control={<Switch  defaultChecked={showeditor}
+                onChange={() => setShowEditor(!showeditor)}
+                 />} label="Code Editor" />
+                <CodeEditor editorRef={editorRef} />
+                <button 
+                className="bg-blue-500 text-white p-2 rounded-md mt-4"
+                onClick={handleSubmitCode}
                 >
-                  Domain: {selectedDomain} | Experience: {selectedExperience} |
-                  Question Style: {selectedQuestionStyle}
-                </motion.div>
-              </div>
+                  Submit Code
+                </button>
 
-              <div
-                ref={chatContainerRef} // Attach the ref to the chat container
-                className="flex-1 overflow-y-auto p-4 flex flex-col space-y-2"
-              >
-                {messages.map((message, index) => (
-                  <div
-                    key={index}
-                    className={`mb-4 p-2 rounded-lg max-w-xs ${
-                      message.role === "user"
-                        ? "bg-blue-500 text-white self-end"
-                        : "bg-gray-200 text-gray-800 self-start"
-                    }`}
-                  >
-                    <pre className="whitespace-pre-wrap break-words ">
-                      {message.message}
-                    </pre>
+                </>
+              ) : (
+                <div>
+                <FormControlLabel control={<Switch   defaultChecked={showeditor}
+                onChange={() => setShowEditor(!showeditor)}
+                />} label="Code Editor" />
+
+                  <div className="flex bg-red-300 p-4 rounded-md mb-4">
+                    <motion.div
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, ease: "easeOut" }}
+                      className="text-sm text-black font-semibold"
+                    >
+                      Domain: {selectedDomain} | Experience:{" "}
+                      {selectedExperience} | Question Style:{" "}
+                      {selectedQuestionStyle}
+                    </motion.div>
                   </div>
-                ))}
-              </div>
-              {iscompleted ? (
-                <div className="flex flex-col items-center bg-green-400 text-white p-4 rounded-md">
-                  <h2 className="text-lg font-bold">Interview Completed</h2>
-                  <div className="bg-white text-black p-4 rounded-md mt-4 w-full max-w-md shadow-md">
-                    <h3 className="text-center text-lg font-semibold mb-4">
-                      Your Scores
-                    </h3>
-                    <div className="flex flex-row gap-4 justify-between">
-                      {/* Vocabulary Score */}
-                      <div className="flex flex-col items-center w-1/4">
-                        <p className="text-sm font-semibold mb-2">Vocabulary</p>
-                        <div className="w-full bg-gray-200 rounded-full h-4">
-                          <div
-                            className="bg-blue-500 h-4 rounded-full"
-                            style={{ width: `${scores.vocabulary * 10}%` }}
-                          ></div>
-                        </div>
-                        <p className="text-center text-xs mt-1">
-                          {scores.vocabulary * 10}%
-                        </p>
-                      </div>
 
-                      {/* Content Score */}
-                      <div className="flex flex-col items-center w-1/4">
-                        <p className="text-sm font-semibold mb-2">Content</p>
-                        <div className="w-full bg-gray-200 rounded-full h-4">
-                          <div
-                            className="bg-blue-500 h-4 rounded-full"
-                            style={{ width: `${scores.content * 10}%` }}
-                          ></div>
-                        </div>
-                        <p className="text-center text-xs mt-1">
-                          {scores.content * 10}%
-                        </p>
+                  <div
+                    ref={chatContainerRef} // Attach the ref to the chat container
+                    className="flex-1 overflow-y-auto p-4 flex flex-col space-y-2"
+                  >
+                    {messages.map((message, index) => (
+                      <div
+                        key={index}
+                        className={`mb-4 p-2 rounded-lg max-w-xs ${
+                          message.role === "user"
+                            ? "bg-blue-500 text-white self-end"
+                            : "bg-gray-200 text-gray-800 self-start"
+                        }`}
+                      >
+                        <pre className="whitespace-pre-wrap break-words ">
+                          {message.message}
+                        </pre>
                       </div>
+                    ))}
+                  </div>
+                  {iscompleted ? (
+                    <div className="flex flex-col items-center bg-green-400 text-white p-4 rounded-md">
+                      <h2 className="text-lg font-bold">Interview Completed</h2>
+                      <div className="bg-white text-black p-4 rounded-md mt-4 w-full max-w-md shadow-md">
+                        <h3 className="text-center text-lg font-semibold mb-4">
+                          Your Scores
+                        </h3>
+                        <div className="flex flex-row gap-4 justify-between">
+                          {/* Vocabulary Score */}
+                          <div className="flex flex-col items-center w-1/4">
+                            <p className="text-sm font-semibold mb-2">
+                              Vocabulary
+                            </p>
+                            <div className="w-full bg-gray-200 rounded-full h-4">
+                              <div
+                                className="bg-blue-500 h-4 rounded-full"
+                                style={{ width: `${scores.vocabulary * 10}%` }}
+                              ></div>
+                            </div>
+                            <p className="text-center text-xs mt-1">
+                              {scores.vocabulary * 10}%
+                            </p>
+                          </div>
 
-                      {/* Confidence Score */}
-                      <div className="flex flex-col items-center w-1/4">
-                        <p className="text-sm font-semibold mb-2">Confidence</p>
-                        <div className="w-full bg-gray-200 rounded-full h-4">
-                          <div
-                            className="bg-blue-500 h-4 rounded-full"
-                            style={{ width: `${scores.confidence * 10}%` }}
-                          ></div>
-                        </div>
-                        <p className="text-center text-xs mt-1">
-                          {scores.confidence * 10}%
-                        </p>
-                      </div>
+                          {/* Content Score */}
+                          <div className="flex flex-col items-center w-1/4">
+                            <p className="text-sm font-semibold mb-2">
+                              Content
+                            </p>
+                            <div className="w-full bg-gray-200 rounded-full h-4">
+                              <div
+                                className="bg-blue-500 h-4 rounded-full"
+                                style={{ width: `${scores.content * 10}%` }}
+                              ></div>
+                            </div>
+                            <p className="text-center text-xs mt-1">
+                              {scores.content * 10}%
+                            </p>
+                          </div>
 
-                      {/* Clarity Score */}
-                      <div className="flex flex-col items-center w-1/4">
-                        <p className="text-sm font-semibold mb-2">Clarity</p>
-                        <div className="w-full bg-gray-200 rounded-full h-4">
-                          <div
-                            className="bg-blue-500 h-4 rounded-full"
-                            style={{ width: `${scores.clarity * 10}%` }}
-                          ></div>
+                          {/* Confidence Score */}
+                          <div className="flex flex-col items-center w-1/4">
+                            <p className="text-sm font-semibold mb-2">
+                              Confidence
+                            </p>
+                            <div className="w-full bg-gray-200 rounded-full h-4">
+                              <div
+                                className="bg-blue-500 h-4 rounded-full"
+                                style={{ width: `${scores.confidence * 10}%` }}
+                              ></div>
+                            </div>
+                            <p className="text-center text-xs mt-1">
+                              {scores.confidence * 10}%
+                            </p>
+                          </div>
+
+                          {/* Clarity Score */}
+                          <div className="flex flex-col items-center w-1/4">
+                            <p className="text-sm font-semibold mb-2">
+                              Clarity
+                            </p>
+                            <div className="w-full bg-gray-200 rounded-full h-4">
+                              <div
+                                className="bg-blue-500 h-4 rounded-full"
+                                style={{ width: `${scores.clarity * 10}%` }}
+                              ></div>
+                            </div>
+                            <p className="text-center text-xs mt-1">
+                              {scores.clarity * 10}%
+                            </p>
+                          </div>
                         </div>
-                        <p className="text-center text-xs mt-1">
-                          {scores.clarity * 10}%
-                        </p>
                       </div>
                     </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex flex-col pb-2 items-center bg-gray-100 rounded-md">
-                  <div className="mb-2 p-2 w-full text-center">
-                    {transcript}
-                  </div>
-                  <button
-                    type="button"
-                    className={`p-3 rounded-full ${
-                      listening ? "bg-red-500" : "bg-gray-500"
-                    }`}
-                    onClick={handleMicClick}
-                  >
-                    <MicIcon className="text-white" />
-                  </button>
-                  <div className="text-gray-500 text-xs mt-2">
-                    {listening ? "Listening..." : "Click to Speak"}
-                  </div>
+                  ) : (
+                    <div className="flex flex-col pb-2 items-center bg-gray-100 rounded-md">
+                      <div className="mb-2 p-2 w-full text-center">
+                        {transcript}
+                      </div>
+                      <button
+                        type="button"
+                        className={`p-3 rounded-full ${
+                          listening ? "bg-red-500" : "bg-gray-500"
+                        }`}
+                        onClick={handleMicClick}
+                      >
+                        <MicIcon className="text-white" />
+                      </button>
+                      <div className="text-gray-500 text-xs mt-2">
+                        {listening ? "Listening..." : "Click to Speak"}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
-            {
-              !iscompleted &&
+            {!iscompleted && (
               <div className="col-span-3 p-4">
-              
-              <Webcam />
-            </div>}
+                <Webcam />
+              </div>
+            )}
           </>
         )}
       </div>
