@@ -51,25 +51,6 @@ const chatSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    score: {
-        vocubulary: {
-
-            type: Number,
-            default: 0,
-        },
-        content: {
-            type: Number,
-            default: 0,
-        },
-        confidence: {
-            type: Number,
-            default: 0,
-        },
-        clarity: {
-            type: Number,
-            default: 0,
-        },
-    }
 
 
 
