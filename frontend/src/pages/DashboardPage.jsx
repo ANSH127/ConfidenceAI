@@ -104,10 +104,6 @@ export default function DashboardPage() {
             </p>
           </motion.div>
         </div>
-
-
-        {/* “How You Performed” */}
-        <Performance/>
         
 
       </PersistentDrawerLeft>

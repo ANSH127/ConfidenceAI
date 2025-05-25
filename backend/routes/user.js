@@ -5,6 +5,5 @@ const  requireAuth  = require('../middleware/requireAuth');
 
 router.post('/signup', signup);
 router.post('/login', login);
-router.get('/score',requireAuth,getUserScore);
 
 module.exports = router;
