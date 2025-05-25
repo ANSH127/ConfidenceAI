@@ -4,13 +4,12 @@ import * as faceLandmarksDetection from "@tensorflow-models/face-landmarks-detec
 import "@tensorflow/tfjs-backend-webgl";
 
 
-export default function Webcam() {
+export default function Webcam({isFaceDetected, setIsFaceDetected}) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [detector, setDetector] = useState(null);
   const [boxColor, setBoxColor] = useState("red"); // Box color state
   const [isCheating, setIsCheating] = useState(false); // Cheating state
-  const [isFaceDetected, setIsFaceDetected] = useState(false); // Face detection state
   
 
   // Initialize the webcam and canvas

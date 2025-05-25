@@ -32,6 +32,8 @@ export default function ChatSection() {
   const [showeditor, setShowEditor] = useState(false);
   const navigate = useNavigate();
   const editorRef = useRef(null);
+  const [isFaceDetected, setIsFaceDetected] = useState(false); // Face detection state
+  
 
   // Ref for the chat container
   const chatContainerRef = useRef(null);
@@ -344,7 +346,9 @@ export default function ChatSection() {
                       <div className="mb-2 p-2 w-full text-center">
                         {transcript}
                       </div>
-                      <button
+                      {
+                        !isFaceDetected ? 
+                        <button
                         type="button"
                         className={`p-3 rounded-full ${
                           listening ? "bg-red-500" : "bg-gray-500"
@@ -353,6 +357,14 @@ export default function ChatSection() {
                       >
                         <MicIcon className="text-white" />
                       </button>
+                      :
+                      <button
+                        type="button"
+                        className="p-3 rounded-full bg-gray-500 cursor-not-allowed"
+                        disabled>
+                          <MicIcon className="text-white"/>
+                        </button>
+}
                       <div className="text-gray-500 text-xs mt-2">
                         {listening ? "Listening..." : "Click to Speak"}
                       </div>
@@ -363,7 +375,7 @@ export default function ChatSection() {
             </div>
             {!iscompleted && (
               <div className="col-span-3 p-4">
-                <Webcam />
+                <Webcam isFaceDetected={isFaceDetected} setIsFaceDetected={setIsFaceDetected}  />
               </div>
             )}
           </>
