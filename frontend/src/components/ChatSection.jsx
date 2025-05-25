@@ -11,10 +11,9 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Webcam from "./WebCam";
 import CodeEditor from "./CodeEditor";
-import Switch from '@mui/material/Switch';
-import FormControlLabel from '@mui/material/FormControlLabel';
-
-
+import Switch from "@mui/material/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import ReactMarkdown from "react-markdown";
 
 export default function ChatSection() {
   const [messages, setMessages] = useState([]);
@@ -33,7 +32,6 @@ export default function ChatSection() {
   const [showeditor, setShowEditor] = useState(false);
   const navigate = useNavigate();
   const editorRef = useRef(null);
-  
 
   // Ref for the chat container
   const chatContainerRef = useRef(null);
@@ -54,7 +52,10 @@ export default function ChatSection() {
           { role: "model", message: modelresponse },
         ]);
 
-        if (modelresponse.includes("Interview Completed") || modelresponse.includes("Interview completed")) {
+        if (
+          modelresponse.includes("Interview Completed") ||
+          modelresponse.includes("Interview completed")
+        ) {
           setIsCompleted(true);
         }
 
@@ -148,32 +149,33 @@ export default function ChatSection() {
     }
   };
 
- const handleSubmitCode = async () => {
-  if (editorRef.current) {
-    let code = editorRef.current.getValue();
-    setShowEditor(false); // Hide the editor after submission
-    await addMessage(code, "user");
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { role: "user", message: code },
-    ]);
-    const modelresponse = await fetchModelResponse(code);
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { role: "model", message: modelresponse },
-    ]);
-    await handleSpeak(modelresponse);
-    await addMessage(modelresponse, "model");
-    if (modelresponse.includes("Interview Completed") || modelresponse.includes("Interview completed")) {
-      setIsCompleted(true);
+  const handleSubmitCode = async () => {
+    if (editorRef.current) {
+      let code = editorRef.current.getValue();
+      setShowEditor(false); // Hide the editor after submission
+      await addMessage(code, "user");
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { role: "user", message: code },
+      ]);
+      const modelresponse = await fetchModelResponse(code);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { role: "model", message: modelresponse },
+      ]);
+      await handleSpeak(modelresponse);
+      await addMessage(modelresponse, "model");
+      if (
+        modelresponse.includes("Interview Completed") ||
+        modelresponse.includes("Interview completed")
+      ) {
+        setIsCompleted(true);
+      }
+      scrollToBottom(); // Scroll to the bottom after sending the code
+    } else {
+      alert("Editor is not ready yet!");
     }
-    scrollToBottom(); // Scroll to the bottom after sending the code
-
-    
-  } else {
-    alert("Editor is not ready yet!");
-  }
-};
+  };
 
   useEffect(() => {
     fetchChat();
@@ -199,25 +201,36 @@ export default function ChatSection() {
             >
               {showeditor ? (
                 <>
-                <FormControlLabel control={<Switch  defaultChecked={showeditor}
-                onChange={() => setShowEditor(!showeditor)}
-                 />} label="Code Editor" />
-                <CodeEditor editorRef={editorRef} />
-                <button 
-                className="bg-blue-500 text-white p-2 rounded-md mt-4"
-                onClick={handleSubmitCode}
-                >
-                  Submit Code
-                </button>
-
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        defaultChecked={showeditor}
+                        onChange={() => setShowEditor(!showeditor)}
+                      />
+                    }
+                    label="Code Editor"
+                  />
+                  <CodeEditor editorRef={editorRef} />
+                  <button
+                    className="bg-blue-500 text-white p-2 rounded-md mt-4"
+                    onClick={handleSubmitCode}
+                  >
+                    Submit Code
+                  </button>
                 </>
               ) : (
                 <div>
-                <FormControlLabel control={<Switch   defaultChecked={showeditor}
-                onChange={() => setShowEditor(!showeditor)}
-                />} label="Code Editor" />
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        defaultChecked={showeditor}
+                        onChange={() => setShowEditor(!showeditor)}
+                      />
+                    }
+                    label="Code Editor"
+                  />
 
-                  <div className="flex bg-red-300 p-4 rounded-md mb-4">
+                  <div className="flex bg-green-300 p-4 rounded-md mb-4">
                     <motion.div
                       initial={{ opacity: 0, y: -20 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -243,9 +256,12 @@ export default function ChatSection() {
                             : "bg-gray-200 text-gray-800 self-start"
                         }`}
                       >
-                        <pre className="whitespace-pre-wrap break-words ">
+                        {/* <pre className="whitespace-pre-wrap break-words ">
                           {message.message}
-                        </pre>
+                        </pre> */}
+                        <div className="">
+                          <ReactMarkdown>{message.message}</ReactMarkdown>
+                        </div>
                       </div>
                     ))}
                   </div>
